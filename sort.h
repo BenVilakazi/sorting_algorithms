@@ -28,9 +28,16 @@ int Lotumo_partition(int *array, int low_idx, int high_idx, size_t size);
 void shell_sort(int *array, size_t size);
 void cocktail_sort_list(listint_t **list);
 void swapped(listint_t *list);
+
 void heap_sort(int *array, size_t size);
 void heapify(int *array, int index, size_t size);
 void swap(int *a, int *b);
+
+void _quick_sort_hoare(int *array, int left, int right, size_t size);
+void quick_sort_hoare(int *array, size_t size);
+int partition(int *array, int left, int right, size_t size);
+void swap(int *array, int i, int j);
+
 
 
 #endif
