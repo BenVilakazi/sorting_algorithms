@@ -1,65 +1,80 @@
 #include "sort.h"
-
-void swap(listint_t *, listint_t *);
-
+#include <stdio.h>
 /**
- * cocktail_sort_list - Cocktail sort algorithm, bidirectional bubble sort
- * @list: double pointer to head of linked list
+ * swap_consec_node - orders linked list with insertion
+ * @temp: current pointer to list
+ * @list: doble pointer to head
+ * Return: swaps two consecutive nodes
+ */
+void swap_consec_node(listint_t *temp, listint_t **list)
+{
+	listint_t *uno, *uno_next, *uno_prev = NULL;
+	listint_t *dos, *dos_next = NULL, *dos_prev;
+
+	uno = temp;
+	dos = temp->next;
+	uno_next = uno->next;
+	if (uno->prev)
+		uno_prev = uno->prev;
+	else
+		uno_prev = NULL;
+	if (dos->next)
+		dos_next = dos->next;
+	else
+		dos_next = NULL;
+	dos_prev = dos->prev;
+	if (uno_prev)
+		uno_prev->next = uno_next;
+	else
+		*list = dos;
+	if (dos_next)
+		dos_next->prev = dos_prev;
+	uno->next = dos_next;
+	uno->prev = dos;
+	dos->next = uno;
+	dos->prev = uno_prev;
+}
+/**
+ * cocktail_sort_list - orders dlinked list with cocktail sort algo
+ * @list: head of double linked list
+ * Return: prints list on each swap
  */
 void cocktail_sort_list(listint_t **list)
 {
-	listint_t *curr, *start, *end;
+	int swap = 1;
+	listint_t *temp = *list;
 
-	if (list == NULL || *list == NULL || (*list)->next == NULL)
+	if (!list)
 		return;
-	start = *list;
-	end = NULL;
-	while (start->next != end) /* start and end are sorted */
+	while (swap)
 	{
-		curr = start;
-		while (curr->next != end)
+		swap = 0;
+		while (temp->next)
 		{
-			if (curr->n > curr->next->n)
+			if (temp->n > temp->next->n)
 			{
-				if (curr == *list)
-					*list = start = curr->next;
-				swap(curr, curr->next);
-				print_list(*list);
+				swap_consec_node(temp, list);
+				temp = temp->prev;
+				swap = 1;
+				if (temp->n != temp->next->n)
+					print_list(*list);
 			}
-			else
-				curr = curr->next;
+			temp = temp->next;
 		}
-		end = curr; /* curr is sorted */
-		curr = curr->prev;
-		while (curr != start)
-		{
-			if (curr->prev != NULL && curr->n < curr->prev->n)
-			{
-				if (curr->prev == *list)
-					*list = start = curr;
-				swap(curr->prev, curr);
-				print_list(*list);
-			}
-			else
-				curr = curr->prev;
-		}
-		start = curr; /* curr is sorted */
-	}
-}
+		temp = temp->prev;
 
-/**
- * swap - function to swap two nodes in a doubly linked list
- * @left: left node to swap
- * @right: right node to swap
- */
-void swap(listint_t *left, listint_t *right)
-{
-	if (left->prev != NULL)
-		left->prev->next = right;
-	if (right->next != NULL)
-		right->next->prev = left;
-	left->next = right->next;
-	right->prev = left->prev;
-	left->prev = right;
-	right->next = left;
+		while (temp->prev)
+		{
+			if (temp->prev->n > temp->n)
+			{
+				swap_consec_node(temp->prev, list);
+				temp = temp->next;
+				swap = 1;
+				if (temp->prev->n != temp->n)
+					print_list(*list);
+			}
+			temp = temp->prev;
+		}
+		temp = temp->next;
+	}
 }
