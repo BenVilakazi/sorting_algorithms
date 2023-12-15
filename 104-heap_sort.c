@@ -1,71 +1,51 @@
 #include "sort.h"
 
 /**
- * heapify - Heapify the root element again so that we have the
- * highest element at root.
- * @array: Array of integers
- * @index: Index of the array
- * @size: Size of the array
- * Return: Void - No return
- */
-void heapify(int *array, int index, size_t size)
+* stupify - recurrssive heapSort
+* @array: Array of int
+* @heap: size of heap data
+* @i: index
+* @size: size of array
+*/
+
+void stupify(int *array, int heap, int i, int size)
 {
-	int larg = index;
-	size_t child_l = 2 * index + 1;
-	size_t child_r = 2 * index + 2;
+	int lar = i, left = 2 * i + 1, right = 2 * i + 2, t;
 
-	if (child_l < size && array[child_l] > array[larg])
+	if (left < heap && array[left] > array[lar])
+		lar = left;
+	if (right < heap && array[right] > array[lar])
+		lar = right;
+	if (lar != i)
 	{
-		larg = child_l;
+		t = array[i], array[i] = array[lar], array[lar] = t;
+		print_array(array, size);
+		stupify(array, heap, lar, size);
 	}
-
-	if (child_r < size && array[child_r] > array[larg])
-	{
-		larg = child_r;
-	}
-
-	if (larg != index)
-	{
-		swap(&array[index], &array[larg]);
-		heapify(array, larg, size);
-	}
-}
-/**
- * swap - Swap values Function
- * @a: Value
- * @b: Value
- * Return: Void - No return
- */
-void swap(int *a, int *b)
-{
-	int temp = *a;
-	*a = *b;
-	*b = temp;
 }
 
 /**
- * heap_sort - Sorts an array of integers in ascending
- * order using the Heap sort algorithm
- * @array: Array of integers
- * @size: Size of the array
- * Return: Void - No return
- */
+* heap_sort - Sorts array with heap sort algo
+* @array: array to sort
+* @size: Size of array to sort
+*/
+
 void heap_sort(int *array, size_t size)
 {
-	int i = 0;
+	int i = size / 2 - 1, temp;
 
-	for (i = size / 2 - 1; i >= 0; i--)
-	{
-		heapify(array, i, size);
-		print_array(array, size);
-	}
-
+	if (array == NULL || size < 2)
+		return;
+	for (; i >= 0; i--)
+		stupify(array, size, i, size);
 	for (i = size - 1; i >= 0; i--)
 	{
-		swap(&array[0], &array[i]);
-		print_array(array, size);
-		/* Put root elem to get highest elem at the root again */
-		heapify(array, 0, i);
-		print_array(array, size);
+		temp = array[0];
+		array[0] = array[i];
+		array[i] = temp;
+		if (i > 0)
+			print_array(array, size);
+		stupify(array, i, 0, size);
 	}
+
 }
